@@ -46,7 +46,11 @@ sudo podman run -d --name apache -p 8080:80 httpd:2.4
 sudo podman port <container name>
 80/tcp - > 127.0.0.1:35123  # Port 35123 on the host will be forwarded to 80 on the container.
 
+# Chapter 3
 
+podman ps --formt="{{ .ID }} {{ .Names }} {{ .Status }}"
+
+podman inspect -f '{{ .NetworkSettings.IPAddress }}' <container>
 
 # Chapter 4:  Managing Container Images
 
@@ -77,6 +81,8 @@ First command MUST be a FROM command.
 Commands are not case sensitive.
 
 
+'s2i' package = source to image.  Installed via YUM.
+
 # Chapter 6:  Deploying Containerized Applications on OpenShift
 Kubernetes is an orchestration service that simplifies deployment, management and scaling of containerized applications.
 
@@ -95,6 +101,11 @@ ConfigMaps and secrets:
 
 
 sudo oc expose <service name>  # creates a route to the service
+oc exec
+oc export
+:q
+which oc
+
 
 ## Creating Kubernetes Resources
 
@@ -104,8 +115,17 @@ sudo oc login <clusterurl>
 sudo oc port-forward mysql-openshift 3306:3306 # forwards port from the developer machine to port 3306 on the DB pod where mysql container is running.
 
 sudo oc new-app   # create a new application that containes resources
+
+sudo oc new-app --as-deployment-config -docker-image=registry/image:latest --name=<name> -e VAR -e VAR2=xx 
 sudo oc get all # retrieve the most important components of a cluster
 sudo oc get pods
+sudo oc status
 oc expose <service name> # create an external route to the service
+
+oc port-forward <service> <port>:<port>
+oc create -f <file of resource definition>
+
+podman cp standalone.conf <container>:/opt/jboss/conf.d
+podman cp <container>:/opt/jbos/conf.d/standalone.conf .
 
 
