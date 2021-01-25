@@ -1,6 +1,6 @@
 # Notes I've taken in order to study for Introduction to Containers, Kubernetes and Red Hat OpenShift
 
-I have not taken the EX447 exam.  I am bound by a non discloure agreement and cannot and will not answer any questions about any Red Hat Exam.  These are notes that I've taken while studying for the exam.
+I have not taken the DO180 exam.  I am bound by a non discloure agreement and cannot and will not answer any questions about any Red Hat Exam.  These are notes that I've taken while studying for the exam.
 
 
 
@@ -127,5 +127,12 @@ oc create -f <file of resource definition>
 
 podman cp standalone.conf <container>:/opt/jboss/conf.d
 podman cp <container>:/opt/jbos/conf.d/standalone.conf .
+        
+   
+# Chapter 7
 
+oc get templates -n openshift # shows preinstalled templates
+oc process -o yaml -f <filename template> -p PARAMETER1 -p PARAMETER2 > myapp.yaml
+        
+ oc process -o yaml -f mysql.yaml -p MYSQL_USER=dev -P MYSQL_PASSWORD=$P4SSD -p MYSQL_DATABASE=bank -p VOLUME_CAPACITY=10Gi > mysqlProcessed.yml
 
