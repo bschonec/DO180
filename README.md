@@ -128,4 +128,6 @@ oc create -f <file of resource definition>
 podman cp standalone.conf <container>:/opt/jboss/conf.d
 podman cp <container>:/opt/jbos/conf.d/standalone.conf .
 
+oc describe template <name> -n openshift
 
+oc process 
