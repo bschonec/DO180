@@ -52,6 +52,12 @@ podman ps --formt="{{ .ID }} {{ .Names }} {{ .Status }}"
 
 podman inspect -f '{{ .NetworkSettings.IPAddress }}' <container>
 
+
+# Execute a command in a running container
+sudo podman exec mysql /bin/bash -c 'mysql -uuser1 -pmypa55 -e "select * from items.Projects;"'
+
+
+
 # Chapter 4:  Managing Container Images
 
 
@@ -131,7 +137,7 @@ podman cp <container>:/opt/jbos/conf.d/standalone.conf .
 oc describe template <name> -n openshift
         
    
-# Chapter 7
+# Chapter 7: Deploying Multi-Container Applications
 
 oc get templates -n openshift # shows preinstalled templates
 oc process -o yaml -f <filename template> -p PARAMETER1 -p PARAMETER2 > myapp.yaml
