@@ -20,6 +20,7 @@ image:  A file system bundle that contains all dependencies required to execute 
 
 
 
+# Chapter 2:  
 sudo podman images # shows images stored locally
 sudo podman pull <image> # pulls image from  repository
 sudo podman run <image> # starts 'latest' container from image
@@ -28,10 +29,13 @@ sudo podman search <text> # search for an image
 
 podman inspect -l -f "{{ something interesting to query }}"
 
---name  <name>
+--name  <name>  # Name the container something easier to manage
 -i, --interactive  # interactive
 -d, --detach  # detach
 -t, --tty # interactive
+
+
+# Chapter 3 : Managing Containers
 
 ## Selinux
 
@@ -81,7 +85,23 @@ First command MUST be a FROM command.
 Commands are not case sensitive.
 
 
-'s2i' package = source to image.  Installed via YUM.
+'s2i' package = source to image.  Installed via YUM.  
+
+## Building Custom Container Images with Dockerfiles
+COPY = copying files 
+
+ADD = copying files into the container.  This can be a remote file from a web server or something local
+      ADD can unpackage tars.  Use COPY unless you have to use ADD.
+	  
+ADD and COPY copy files with root:root.  If you need permissions changed a RUN command is necessary.
+
+ENTRYPOINT = The binary that gets run as PID 1.  ENTRYPOINT 
+CMD arguments to ENTRYPOINT
+
+You can override the CMD parameters from the command line but entrypoint cannot be overriden.
+
+ENV = environment variable defaults
+
 
 # Chapter 6:  Deploying Containerized Applications on OpenShift
 Kubernetes is an orchestration service that simplifies deployment, management and scaling of containerized applications.
@@ -98,6 +118,9 @@ Namespace:  A bundle of resources and processes.
 Persistent volume: defines storage
 persistent volume claim:
 ConfigMaps and secrets: 
+
+"oc port-forward"is used only for use on the local machine .. for testing
+"oc expose port" is used for world-wide use.
 
 
 sudo oc expose <service name>  # creates a route to the service
@@ -118,6 +141,24 @@ sudo oc new-app   # create a new application that containes resources
 
 sudo oc new-app --as-deployment-config -docker-image=registry/image:latest --name=<name> -e VAR -e VAR2=xx 
 sudo oc get all # retrieve the most important components of a cluster
+
+oc status
+oc get pods
+oc describe pod <podname>
+
+oc get service
+oc expose service <service>
+oc get routes
+
+
+oc get pod --all-namespaces -l app=router
+
+sudo oc edit
+sudo oc export
+oc create <resource file>
+oc delete
+oc get svc,dc -l app=nexus # get all services and deployment config with the label of "app=nexus"
+
 sudo oc get pods
 sudo oc status
 oc expose <service name> # create an external route to the service
@@ -129,7 +170,25 @@ podman cp standalone.conf <container>:/opt/jboss/conf.d
 podman cp <container>:/opt/jbos/conf.d/standalone.conf .
 
 oc describe template <name> -n openshift
-        
+
+oc get is -n openshift # get image streams
+
+oc new-app -i php http://source.code.net/app.git --context-dir=path/under/git/home --name=app
+oc new-app -i php http://project.github.com/bschonec/project.git#feature_branch --context-dir=docker 
+oc new-app . # when source code is located locally.
+   
+Files looked for automatically:
+pom.xml # Java EE
+app.json|package.json # Node.json
+index.php|composer.json #PHP
+requirements.txt # Python
+index.pl # PERL   
+   
+oc -o json new-app <blah blah> > my_app.json  # Outline of all resources needed to create application
+oc logs --all-containers -f php-helloworld-1-build
+
+oc start-build <buildconfig>
+
    
 # Chapter 7
 
@@ -139,3 +198,4 @@ oc process -o yaml -f <filename template> -p PARAMETER1 -p PARAMETER2 > myapp.ya
  oc process -o yaml -f mysql.yaml -p MYSQL_USER=dev -P MYSQL_PASSWORD=$P4SSD -p MYSQL_DATABASE=bank -p VOLUME_CAPACITY=10Gi > mysqlProcessed.yml
 
 oc process 
+a
