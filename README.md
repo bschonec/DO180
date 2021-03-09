@@ -3,6 +3,9 @@
 I have not taken the DO180 exam.  I am bound by a non discloure agreement and cannot and will not answer any questions about any Red Hat Exam.  These are notes that I've taken while studying for the exam.
 
 
+# Misc
+
+insert into Projects (id, name) values (1, "devops");
 
 # Chapter 1:  Introducing Container Technology
 
@@ -56,12 +59,20 @@ podman ps --formt="{{ .ID }} {{ .Names }} {{ .Status }}"
 
 podman inspect -f '{{ .NetworkSettings.IPAddress }}' <container>
 
+
+# Execute a command in a running container
+sudo podman exec mysql /bin/bash -c 'mysql -uuser1 -pmypa55 -e "select * from items.Projects;"'
+
+
+
 # Chapter 4:  Managing Container Images
 
 
 podman save -o <file> image[:TAG} # Saves image/tag to a tarball.
 podman rmi <image>  # remove local image
 podman rm <container> # remove non-running container instance
+
+podman build -t mytag --build-arg NEXUS_BASE_URL=https://nexus.io/bschonec
 
 podman commit <container> [repository]<image name>:[TAG]
 
@@ -124,7 +135,7 @@ ConfigMaps and secrets:
 
 
 sudo oc expose <service name>  # creates a route to the service
-oc exec
+oc exec pod -- command  # same as 'podman exec'
 oc export
 :q
 which oc
@@ -190,7 +201,7 @@ oc logs --all-containers -f php-helloworld-1-build
 oc start-build <buildconfig>
 
    
-# Chapter 7
+# Chapter 7: Deploying Multi-Container Applications
 
 oc get templates -n openshift # shows preinstalled templates
 oc process -o yaml -f <filename template> -p PARAMETER1 -p PARAMETER2 > myapp.yaml
@@ -199,3 +210,57 @@ oc process -o yaml -f <filename template> -p PARAMETER1 -p PARAMETER2 > myapp.ya
 
 oc process 
 a
+oc ## upload template
+
+
+## Environment variables created when a service is created
+
+eg: service name = mysql
+
+MYSQL_SERVICE_HOST=10.0.0.11    # <service name> _SERVICE_HOST
+MYSQL_SERVICE_PORT=3306         # <service name> _SERVICE_PORT
+MYSQL_PORT=tcp://10.0.0.11:3306
+MYSQL_PORT_3306_TCP=tcp://10.0.0.11:3306
+MYSQL_PORT_3306_TCP_PROTO=tcp
+MYSQL_PORT_3306_TCP_PORT=3306
+MYSQL_PORT_3306_TCP_ADDR=10.0.0.11
+
+# Show parameters that the template expects.
+oc process --parameters mysql-persistent -n openshift
+
+
+"oc process" is a two step process.  oc process -o yaml -f <filename>  # process the template and output toyaml
+
+
+podman run --ip <static IP of container>
+
+# Chapter 8:  Troubleshooting Containerized Applications
+
+Ensure container_file_t SELinux context is set for any local volumes attached to a container.
+
+
+oc delete pv <volume>  # Delete persistent volume
+oc create -f <pv_claim> # recreate the persistent volume clean
+
+
+oc get bc
+oc logs bc/<buildconfig>
+oc expose service <service>
+oc get routes
+
+oc port-forward db 30306 3306 # port forwards 30303 into pod "db" to 3306
+
+oc get events
+oc describe pod mysql
+
+
+podma exec [options]
+
+oc exec -it pod -c <container> 
+
+oc exec -it myhttpdpod /bin/bash
+
+podman cp <local file> <container>:/path/to/file
+podman cp /etc/hosts ubi7:/etc/hosts
+
+
